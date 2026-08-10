@@ -507,23 +507,23 @@
         if (!this.isBGMPlaying) return;
         if (this.bgmTimer) clearTimeout(this.bgmTimer);
 
-        // Retro Melodies & Tempos per Level
+        // Soft Space Ambient & Synthwave Melodies
         let melody, bass, tempo;
         if (this.currentLevel === 1) {
-          // Level 1: Heroic Upbeat Major Arcade
-          melody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 392.00, 329.63, 392.00, 523.25, 587.33, 523.25, 493.88, 440.00, 392.00];
-          bass = [130.81, 130.81, 196.00, 196.00, 220.00, 220.00, 174.61, 174.61];
-          tempo = 180;
+          // Level 1: Soft Cosmic Breeze (Relaxing Cmaj7 - Am7 Pad)
+          melody = [261.63, 329.63, 392.00, 493.88, 523.25, 392.00, 329.63, 261.63, 220.00, 261.63, 329.63, 440.00, 392.00, 329.63, 293.66, 261.63];
+          bass = [130.81, 130.81, 110.00, 110.00, 87.31, 87.31, 98.00, 98.00];
+          tempo = 260;
         } else if (this.currentLevel === 2) {
-          // Level 2: Intense Synthwave Minor Drive
-          melody = [440.00, 523.25, 659.25, 523.25, 440.00, 392.00, 440.00, 523.25, 587.33, 698.46, 659.25, 587.33, 523.25, 493.88, 440.00, 392.00];
-          bass = [220.00, 220.00, 164.81, 164.81, 174.61, 174.61, 196.00, 196.00];
-          tempo = 140;
+          // Level 2: Dreamy Space Synthwave
+          melody = [329.63, 392.00, 493.88, 587.33, 659.25, 523.25, 440.00, 392.00, 349.23, 440.00, 523.25, 659.25, 587.33, 493.88, 440.00, 392.00];
+          bass = [110.00, 110.00, 87.31, 87.31, 130.81, 130.81, 164.81, 164.81];
+          tempo = 220;
         } else {
-          // Level 3+: Fast Boss Battle Rush
-          melody = [587.33, 698.46, 880.00, 698.46, 587.33, 523.25, 587.33, 698.46, 783.99, 880.00, 932.33, 880.00, 783.99, 698.46, 622.25, 523.25];
-          bass = [146.83, 146.83, 174.61, 174.61, 196.00, 196.00, 130.81, 130.81];
-          tempo = 110;
+          // Level 3+: Deep Space Odyssey
+          melody = [392.00, 493.88, 587.33, 659.25, 783.99, 659.25, 587.33, 493.88, 440.00, 523.25, 659.25, 783.99, 698.46, 587.33, 523.25, 440.00];
+          bass = [98.00, 98.00, 110.00, 110.00, 130.81, 130.81, 87.31, 87.31];
+          tempo = 190;
         }
 
         if (!this.muted && this.ctx) {
@@ -538,37 +538,39 @@
         try {
           const now = this.ctx.currentTime;
 
-          // 1. Lead Melody Note (Square Wave)
+          // 1. Soft Lead Melody Note (Warm Pure Sine Wave)
           const leadOsc = this.ctx.createOscillator();
           const leadGain = this.ctx.createGain();
-          leadOsc.type = 'square';
+          leadOsc.type = 'sine';
           leadOsc.frequency.setValueAtTime(leadFreq, now);
 
-          leadGain.gain.setValueAtTime(0.05, now);
-          leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          leadGain.gain.setValueAtTime(0.001, now);
+          leadGain.gain.linearRampToValueAtTime(0.035, now + 0.04);
+          leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
 
           leadOsc.connect(leadGain);
           leadGain.connect(this.ctx.destination);
           leadOsc.start(now);
-          leadOsc.stop(now + 0.12);
+          leadOsc.stop(now + 0.28);
 
-          // 2. Bass Note (Triangle Wave)
+          // 2. Warm Ambient Bass (Low-pass Filtered Triangle)
           const bassOsc = this.ctx.createOscillator();
           const bassGain = this.ctx.createGain();
           bassOsc.type = 'triangle';
           bassOsc.frequency.setValueAtTime(bassFreq, now);
 
-          bassGain.gain.setValueAtTime(0.10, now);
-          bassGain.gain.exponentialRampToValueAtTime(0.005, now + 0.15);
+          bassGain.gain.setValueAtTime(0.001, now);
+          bassGain.gain.linearRampToValueAtTime(0.04, now + 0.05);
+          bassGain.gain.exponentialRampToValueAtTime(0.002, now + 0.32);
 
           bassOsc.connect(bassGain);
           bassGain.connect(this.ctx.destination);
           bassOsc.start(now);
-          bassOsc.stop(now + 0.15);
+          bassOsc.stop(now + 0.32);
 
-          // 3. Hi-Hat Beat on alternate steps
-          if (step % 2 === 0) {
-            const noiseBuf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * 0.03), this.ctx.sampleRate);
+          // 3. Ambient Soft Whisper Brush Beat
+          if (step % 4 === 0) {
+            const noiseBuf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * 0.04), this.ctx.sampleRate);
             const data = noiseBuf.getChannelData(0);
             for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
 
@@ -576,19 +578,19 @@
             noise.buffer = noiseBuf;
 
             const filter = this.ctx.createBiquadFilter();
-            filter.type = 'highpass';
-            filter.frequency.setValueAtTime(5000, now);
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(3500, now);
 
             const nGain = this.ctx.createGain();
-            nGain.gain.setValueAtTime(0.02, now);
-            nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+            nGain.gain.setValueAtTime(0.008, now);
+            nGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.04);
 
             noise.connect(filter);
             filter.connect(nGain);
             nGain.connect(this.ctx.destination);
 
             noise.start(now);
-            noise.stop(now + 0.03);
+            noise.stop(now + 0.04);
           }
         } catch (e) {}
       }
@@ -697,23 +699,24 @@
         if (this.muted || !this.ctx) return;
         try {
           const now = this.ctx.currentTime;
-          // Descending melancholic game over chiptune melody
-          const notes = [440.00, 349.23, 293.66, 233.08, 220.00, 174.61, 146.83];
+          // Soft descending melancholic space lullaby melody
+          const notes = [440.00, 392.00, 349.23, 329.63, 293.66, 261.63, 220.00];
           notes.forEach((freq, idx) => {
-            const time = now + idx * 0.26;
+            const time = now + idx * 0.30;
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
-            osc.type = 'sawtooth';
+            osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, time);
 
-            gain.gain.setValueAtTime(0.18, time);
-            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
+            gain.gain.setValueAtTime(0.001, time);
+            gain.gain.linearRampToValueAtTime(0.04, time + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0005, time + 0.45);
 
             osc.connect(gain);
             gain.connect(this.ctx.destination);
 
             osc.start(time);
-            osc.stop(time + 0.32);
+            osc.stop(time + 0.45);
           });
         } catch (e) {}
       }
