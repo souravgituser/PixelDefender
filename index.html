@@ -364,6 +364,7 @@
       </div>
 
       <div class="hud-actions">
+        <button id="btn-perf" class="icon-btn" title="Toggle ECO Performance Mode (Glow FX)">⚡</button>
         <button id="btn-audio" class="icon-btn" title="Toggle Sound">🔊</button>
         <button id="btn-pause" class="icon-btn" title="Pause Game (P/ESC)">⏸️</button>
         <button id="btn-hud-restart" class="icon-btn" title="Restart Game">🔄</button>
@@ -739,7 +740,7 @@
 
       init() {
         this.stars = [];
-        const count = 120;
+        const count = 100;
         for (let i = 0; i < count; i++) {
           this.stars.push({
             x: Math.random() * this.width,
@@ -752,7 +753,8 @@
       }
 
       update() {
-        for (let star of this.stars) {
+        for (let i = 0; i < this.stars.length; i++) {
+          const star = this.stars[i];
           star.y += star.speed;
           if (star.y > this.height) {
             star.y = 0;
@@ -763,11 +765,10 @@
 
       draw(ctx) {
         ctx.save();
-        for (let star of this.stars) {
+        for (let i = 0; i < this.stars.length; i++) {
+          const star = this.stars[i];
           ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-          ctx.beginPath();
-          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.fillRect(star.x, star.y, star.size, star.size);
         }
         ctx.restore();
       }
@@ -827,7 +828,7 @@
         }
       }
 
-      draw(ctx) {
+      draw(ctx, enableGlow = true) {
         // Blink when invulnerable
         if (this.invulnerableTimer > 0 && Math.floor(Date.now() / 100) % 2 === 0) {
           return;
@@ -839,8 +840,10 @@
         // Neon Thruster Flame
         const flameHeight = 12 + Math.random() * 8;
         ctx.fillStyle = '#ff0055';
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = '#ff0055';
+        if (enableGlow) {
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#ff0055';
+        }
         ctx.beginPath();
         ctx.moveTo(-8, 16);
         ctx.lineTo(0, 16 + flameHeight);
@@ -857,8 +860,10 @@
         ctx.fill();
 
         // Ship Body (Neon Sci-Fi Fighter)
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = '#00f3ff';
+        if (enableGlow) {
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = '#00f3ff';
+        }
         ctx.strokeStyle = '#00f3ff';
         ctx.fillStyle = '#092336';
         ctx.lineWidth = 2.5;
@@ -878,8 +883,10 @@
 
         // Cockpit Glass
         ctx.fillStyle = '#00ff66';
-        ctx.shadowColor = '#00ff66';
-        ctx.shadowBlur = 10;
+        if (enableGlow) {
+          ctx.shadowColor = '#00ff66';
+          ctx.shadowBlur = 8;
+        }
         ctx.beginPath();
         ctx.ellipse(0, -4, 4, 8, 0, 0, Math.PI * 2);
         ctx.fill();
@@ -888,8 +895,10 @@
         if (this.shieldActive) {
           ctx.strokeStyle = 'rgba(0, 243, 255, 0.8)';
           ctx.fillStyle = 'rgba(0, 243, 255, 0.15)';
-          ctx.shadowColor = '#00f3ff';
-          ctx.shadowBlur = 20;
+          if (enableGlow) {
+            ctx.shadowColor = '#00f3ff';
+            ctx.shadowBlur = 15;
+          }
           ctx.lineWidth = 3;
           ctx.beginPath();
           ctx.arc(0, -2, 32, 0, Math.PI * 2);
@@ -922,10 +931,12 @@
         }
       }
 
-      draw(ctx) {
+      draw(ctx, enableGlow = true) {
         ctx.save();
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = this.color;
+        if (enableGlow) {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = this.color;
+        }
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x - this.width / 2, this.y, this.width, this.height);
         
@@ -1007,14 +1018,17 @@
         }
       }
 
-      draw(ctx) {
+      draw(ctx, enableGlow = true) {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
 
-        if (this.type === 'ASTEROID') {
-          ctx.shadowBlur = 10;
+        if (enableGlow) {
+          ctx.shadowBlur = 8;
           ctx.shadowColor = this.color;
+        }
+
+        if (this.type === 'ASTEROID') {
           ctx.strokeStyle = this.color;
           ctx.fillStyle = '#1c150c';
           ctx.lineWidth = 2;
@@ -1029,8 +1043,6 @@
           ctx.stroke();
         } 
         else if (this.type === 'SCOUT') {
-          ctx.shadowBlur = 12;
-          ctx.shadowColor = this.color;
           ctx.strokeStyle = this.color;
           ctx.fillStyle = '#2d0916';
           ctx.lineWidth = 2;
@@ -1045,8 +1057,6 @@
           ctx.stroke();
         } 
         else if (this.type === 'DREADNOUGHT') {
-          ctx.shadowBlur = 15;
-          ctx.shadowColor = this.color;
           ctx.strokeStyle = this.color;
           ctx.fillStyle = '#1a0c2e';
           ctx.lineWidth = 2.5;
@@ -1083,36 +1093,36 @@
         this.x = x;
         this.y = y;
         this.color = color;
-        this.radius = Math.random() * 3 + 1.5;
+        this.radius = Math.random() * 2.5 + 1.2;
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 6 + 1;
+        const speed = Math.random() * 5 + 1;
         this.vx = Math.cos(angle) * speed;
         this.vy = Math.sin(angle) * speed;
         this.alpha = 1;
-        this.decay = Math.random() * 0.03 + 0.02;
+        this.decay = Math.random() * 0.04 + 0.025;
         this.alive = true;
       }
 
       update() {
         this.x += this.vx;
         this.y += this.vy;
-        this.vx *= 0.96;
-        this.vy *= 0.96;
+        this.vx *= 0.95;
+        this.vy *= 0.95;
         this.alpha -= this.decay;
         if (this.alpha <= 0) {
           this.alive = false;
         }
       }
 
-      draw(ctx) {
+      draw(ctx, enableGlow = false) {
         ctx.save();
         ctx.globalAlpha = Math.max(0, this.alpha);
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+        if (enableGlow) {
+          ctx.shadowBlur = 4;
+          ctx.shadowColor = this.color;
+        }
+        ctx.fillRect(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
         ctx.restore();
       }
     }
@@ -1233,6 +1243,11 @@
         this.powerups = [];
         this.floatingTexts = [];
 
+        // Performance & Glow Settings
+        this.glowEnabled = true;
+        this.fpsHistory = [];
+        this.autoEcoTriggered = false;
+
         // Key listeners
         this.keys = {};
         this.setupInputListeners();
@@ -1318,6 +1333,16 @@
           if (audio.muted) audio.pauseBGM();
           else if (this.state === 'PLAYING') audio.resumeBGM();
         });
+
+        const perfBtn = document.getElementById('btn-perf');
+        if (perfBtn) {
+          perfBtn.addEventListener('click', () => {
+            this.glowEnabled = !this.glowEnabled;
+            perfBtn.style.opacity = this.glowEnabled ? '1' : '0.5';
+            perfBtn.style.borderColor = this.glowEnabled ? 'var(--primary)' : '#718096';
+            this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 250, this.glowEnabled ? 'TURBO GLOW ACTIVE' : 'ECO MODE ACTIVE (60 FPS)', '#00ff66'));
+          });
+        }
       }
 
       promptRestart() {
@@ -1683,6 +1708,19 @@
         this.enemies = this.enemies.filter(e => e.alive);
       }
 
+      triggerExplosion(x, y, color = '#ff9900', count = 12) {
+        audio.playExplosion();
+        // Cap max active particles for smooth FPS on low end hardware
+        const particleCap = this.glowEnabled ? 60 : 30;
+        if (this.particles.length > particleCap) {
+          this.particles.splice(0, this.particles.length - particleCap);
+        }
+        const spawnCount = Math.min(count, 12);
+        for (let i = 0; i < spawnCount; i++) {
+          this.particles.push(new Particle(x, y, color));
+        }
+      }
+
       draw() {
         this.ctx.save();
 
@@ -1697,22 +1735,46 @@
         this.ctx.fillStyle = '#080b10';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw Game Objects
+        // Draw Game Objects with performance flag
         this.starfield.draw(this.ctx);
-        this.powerups.forEach(p => p.draw(this.ctx));
-        this.playerLasers.forEach(l => l.draw(this.ctx));
-        this.enemyLasers.forEach(el => el.draw(this.ctx));
-        this.enemies.forEach(e => e.draw(this.ctx));
-        this.player.draw(this.ctx);
-        this.particles.forEach(p => p.draw(this.ctx));
-        this.floatingTexts.forEach(ft => ft.draw(this.ctx));
+        const glow = this.glowEnabled;
+
+        for (let i = 0; i < this.powerups.length; i++) this.powerups[i].draw(this.ctx);
+        for (let i = 0; i < this.playerLasers.length; i++) this.playerLasers[i].draw(this.ctx, glow);
+        for (let i = 0; i < this.enemyLasers.length; i++) this.enemyLasers[i].draw(this.ctx, glow);
+        for (let i = 0; i < this.enemies.length; i++) this.enemies[i].draw(this.ctx, glow);
+        this.player.draw(this.ctx, glow);
+        for (let i = 0; i < this.particles.length; i++) this.particles[i].draw(this.ctx, false);
+        for (let i = 0; i < this.floatingTexts.length; i++) this.floatingTexts[i].draw(this.ctx);
 
         this.ctx.restore();
       }
 
       loop(now) {
-        const deltaTime = now - this.lastFrameTime;
+        const rawDelta = now - this.lastFrameTime;
+        const deltaTime = Math.min(rawDelta, 33.3);
         this.lastFrameTime = now;
+
+        // Auto Performance Monitor for Low End Hardware
+        if (this.state === 'PLAYING') {
+          const currentFps = 1000 / Math.max(rawDelta, 1);
+          this.fpsHistory.push(currentFps);
+          if (this.fpsHistory.length > 60) this.fpsHistory.shift();
+
+          if (this.fpsHistory.length === 60 && !this.autoEcoTriggered) {
+            const avgFps = this.fpsHistory.reduce((a, b) => a + b, 0) / 60;
+            if (avgFps < 48) {
+              this.glowEnabled = false;
+              this.autoEcoTriggered = true;
+              const perfBtn = document.getElementById('btn-perf');
+              if (perfBtn) {
+                perfBtn.style.opacity = '0.5';
+                perfBtn.style.borderColor = '#718096';
+              }
+              this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 250, 'AUTO ECO MODE ACTIVE (60 FPS)', '#00ff66'));
+            }
+          }
+        }
 
         this.update(deltaTime);
         this.draw();
