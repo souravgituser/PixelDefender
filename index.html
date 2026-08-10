@@ -453,6 +453,10 @@
       constructor() {
         this.ctx = null;
         this.muted = false;
+        this.bgmTimer = null;
+        this.bgmStep = 0;
+        this.currentLevel = 1;
+        this.isBGMPlaying = false;
       }
 
       init() {
@@ -463,6 +467,130 @@
         if (this.ctx.state === 'suspended') {
           this.ctx.resume();
         }
+      }
+
+      startBGM(level = 1) {
+        this.init();
+        this.stopBGM();
+        this.currentLevel = level;
+        this.isBGMPlaying = true;
+        this.bgmStep = 0;
+        this.scheduleNextBGMStep();
+      }
+
+      setMusicLevel(level) {
+        this.currentLevel = level;
+      }
+
+      stopBGM() {
+        this.isBGMPlaying = false;
+        if (this.bgmTimer) {
+          clearTimeout(this.bgmTimer);
+          this.bgmTimer = null;
+        }
+      }
+
+      pauseBGM() {
+        if (this.bgmTimer) {
+          clearTimeout(this.bgmTimer);
+          this.bgmTimer = null;
+        }
+      }
+
+      resumeBGM() {
+        if (this.isBGMPlaying && !this.bgmTimer && !this.muted) {
+          this.scheduleNextBGMStep();
+        }
+      }
+
+      scheduleNextBGMStep() {
+        if (!this.isBGMPlaying) return;
+        if (this.bgmTimer) clearTimeout(this.bgmTimer);
+
+        // Retro Melodies & Tempos per Level
+        let melody, bass, tempo;
+        if (this.currentLevel === 1) {
+          // Level 1: Heroic Upbeat Major Arcade
+          melody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 392.00, 329.63, 392.00, 523.25, 587.33, 523.25, 493.88, 440.00, 392.00];
+          bass = [130.81, 130.81, 196.00, 196.00, 220.00, 220.00, 174.61, 174.61];
+          tempo = 180;
+        } else if (this.currentLevel === 2) {
+          // Level 2: Intense Synthwave Minor Drive
+          melody = [440.00, 523.25, 659.25, 523.25, 440.00, 392.00, 440.00, 523.25, 587.33, 698.46, 659.25, 587.33, 523.25, 493.88, 440.00, 392.00];
+          bass = [220.00, 220.00, 164.81, 164.81, 174.61, 174.61, 196.00, 196.00];
+          tempo = 140;
+        } else {
+          // Level 3+: Fast Boss Battle Rush
+          melody = [587.33, 698.46, 880.00, 698.46, 587.33, 523.25, 587.33, 698.46, 783.99, 880.00, 932.33, 880.00, 783.99, 698.46, 622.25, 523.25];
+          bass = [146.83, 146.83, 174.61, 174.61, 196.00, 196.00, 130.81, 130.81];
+          tempo = 110;
+        }
+
+        if (!this.muted && this.ctx) {
+          this.playSynthNote(melody[this.bgmStep % melody.length], bass[this.bgmStep % bass.length], this.bgmStep);
+        }
+
+        this.bgmStep++;
+        this.bgmTimer = setTimeout(() => this.scheduleNextBGMStep(), tempo);
+      }
+
+      playSynthNote(leadFreq, bassFreq, step) {
+        try {
+          const now = this.ctx.currentTime;
+
+          // 1. Lead Melody Note (Square Wave)
+          const leadOsc = this.ctx.createOscillator();
+          const leadGain = this.ctx.createGain();
+          leadOsc.type = 'square';
+          leadOsc.frequency.setValueAtTime(leadFreq, now);
+
+          leadGain.gain.setValueAtTime(0.05, now);
+          leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+          leadOsc.connect(leadGain);
+          leadGain.connect(this.ctx.destination);
+          leadOsc.start(now);
+          leadOsc.stop(now + 0.12);
+
+          // 2. Bass Note (Triangle Wave)
+          const bassOsc = this.ctx.createOscillator();
+          const bassGain = this.ctx.createGain();
+          bassOsc.type = 'triangle';
+          bassOsc.frequency.setValueAtTime(bassFreq, now);
+
+          bassGain.gain.setValueAtTime(0.10, now);
+          bassGain.gain.exponentialRampToValueAtTime(0.005, now + 0.15);
+
+          bassOsc.connect(bassGain);
+          bassGain.connect(this.ctx.destination);
+          bassOsc.start(now);
+          bassOsc.stop(now + 0.15);
+
+          // 3. Hi-Hat Beat on alternate steps
+          if (step % 2 === 0) {
+            const noiseBuf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * 0.03), this.ctx.sampleRate);
+            const data = noiseBuf.getChannelData(0);
+            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = noiseBuf;
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.setValueAtTime(5000, now);
+
+            const nGain = this.ctx.createGain();
+            nGain.gain.setValueAtTime(0.02, now);
+            nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+
+            noise.connect(filter);
+            filter.connect(nGain);
+            nGain.connect(this.ctx.destination);
+
+            noise.start(now);
+            noise.stop(now + 0.03);
+          }
+        } catch (e) {}
       }
 
       playLaser() {
@@ -488,7 +616,7 @@
       playExplosion() {
         if (this.muted || !this.ctx) return;
         try {
-          const bufferSize = this.ctx.sampleRate * 0.25;
+          const bufferSize = Math.floor(this.ctx.sampleRate * 0.25);
           const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
           const data = buffer.getChannelData(0);
           for (let i = 0; i < bufferSize; i++) {
@@ -561,25 +689,28 @@
       }
 
       playGameOver() {
+        this.stopBGM();
         if (this.muted || !this.ctx) return;
         try {
           const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sawtooth';
+          // Descending melancholic game over chiptune melody
+          const notes = [440.00, 349.23, 293.66, 233.08, 220.00, 174.61, 146.83];
+          notes.forEach((freq, idx) => {
+            const time = now + idx * 0.26;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, time);
 
-          osc.frequency.setValueAtTime(400, now);
-          osc.frequency.linearRampToValueAtTime(200, now + 0.3);
-          osc.frequency.linearRampToValueAtTime(90, now + 0.8);
+            gain.gain.setValueAtTime(0.18, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
 
-          gain.gain.setValueAtTime(0.3, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
 
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start();
-          osc.stop(now + 0.8);
+            osc.start(time);
+            osc.stop(time + 0.32);
+          });
         } catch (e) {}
       }
     }
@@ -1171,6 +1302,8 @@
         audioBtn.addEventListener('click', () => {
           audio.muted = !audio.muted;
           audioBtn.textContent = audio.muted ? '🔇' : '🔊';
+          if (audio.muted) audio.pauseBGM();
+          else if (this.state === 'PLAYING') audio.resumeBGM();
         });
       }
 
@@ -1178,6 +1311,7 @@
         if (this.state === 'START') return;
         this.previousState = this.state;
         this.state = 'PAUSED';
+        audio.pauseBGM();
         document.getElementById('screen-restart-confirm').classList.remove('hidden');
       }
 
@@ -1186,6 +1320,7 @@
         if (this.previousState === 'PLAYING') {
           this.state = 'PLAYING';
           this.lastFrameTime = performance.now();
+          audio.resumeBGM();
         } else if (this.previousState === 'PAUSED') {
           document.getElementById('screen-pause').classList.remove('hidden');
         }
@@ -1215,6 +1350,7 @@
         this.floatingTexts = [];
 
         this.state = 'PLAYING';
+        audio.startBGM(1);
         this.updateHUD();
 
         document.getElementById('screen-start').classList.add('hidden');
@@ -1225,18 +1361,20 @@
 
       pauseGame() {
         this.state = 'PAUSED';
+        audio.pauseBGM();
         document.getElementById('screen-pause').classList.remove('hidden');
       }
 
       resumeGame() {
         this.state = 'PLAYING';
+        audio.resumeBGM();
         document.getElementById('screen-pause').classList.add('hidden');
         this.lastFrameTime = performance.now();
       }
 
       gameOver() {
         this.state = 'GAME_OVER';
-        audio.playGameOver();
+        audio.playGameOverMusic();
 
         if (this.score > this.highScore) {
           this.highScore = this.score;
@@ -1309,6 +1447,7 @@
         if (newLevel > this.level) {
           this.level = newLevel;
           this.spawnInterval = Math.max(400, 1200 - (this.level - 1) * 120);
+          audio.setMusicLevel(this.level);
           this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 200, `WAVE ${this.level} ENGAGED!`, '#00f3ff'));
         }
 
