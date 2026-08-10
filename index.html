@@ -350,6 +350,11 @@
       </div>
 
       <div class="hud-block" style="align-items: center;">
+        <span id="hud-stage-label" class="hud-label" style="color: var(--primary);">STAGE 1</span>
+        <span id="hud-timer" class="hud-value" style="color: var(--accent); font-size: 1.05rem;">30s</span>
+      </div>
+
+      <div class="hud-block" style="align-items: center;">
         <span class="hud-label">Lives</span>
         <div id="hud-lives" class="lives-container">
           <span class="heart-icon">❤️</span>
@@ -470,17 +475,19 @@
         }
       }
 
-      startBGM(level = 1) {
+      startBGM(level = 1, isBoss = false) {
         this.init();
         this.stopBGM();
         this.currentLevel = level;
+        this.isBossFight = isBoss;
         this.isBGMPlaying = true;
         this.bgmStep = 0;
         this.scheduleNextBGMStep();
       }
 
-      setMusicLevel(level) {
+      setMusicLevel(level, isBoss = false) {
         this.currentLevel = level;
+        this.isBossFight = isBoss;
       }
 
       stopBGM() {
@@ -508,23 +515,42 @@
         if (!this.isBGMPlaying) return;
         if (this.bgmTimer) clearTimeout(this.bgmTimer);
 
-        // Soft Space Ambient & Synthwave Melodies
         let melody, bass, tempo;
-        if (this.currentLevel === 1) {
-          // Level 1: Soft Cosmic Breeze (Relaxing Cmaj7 - Am7 Pad)
-          melody = [261.63, 329.63, 392.00, 493.88, 523.25, 392.00, 329.63, 261.63, 220.00, 261.63, 329.63, 440.00, 392.00, 329.63, 293.66, 261.63];
-          bass = [130.81, 130.81, 110.00, 110.00, 87.31, 87.31, 98.00, 98.00];
-          tempo = 260;
-        } else if (this.currentLevel === 2) {
-          // Level 2: Dreamy Space Synthwave
-          melody = [329.63, 392.00, 493.88, 587.33, 659.25, 523.25, 440.00, 392.00, 349.23, 440.00, 523.25, 659.25, 587.33, 493.88, 440.00, 392.00];
-          bass = [110.00, 110.00, 87.31, 87.31, 130.81, 130.81, 164.81, 164.81];
-          tempo = 220;
+
+        if (this.isBossFight) {
+          // Intense Driving Boss Fight Rhythm & Bassline
+          melody = [440.00, 523.25, 440.00, 659.25, 587.33, 523.25, 659.25, 783.99, 440.00, 523.25, 440.00, 880.00, 783.99, 659.25, 587.33, 523.25];
+          bass = [110.00, 110.00, 146.83, 146.83, 164.81, 164.81, 130.81, 130.81];
+          tempo = 145;
         } else {
-          // Level 3+: Deep Space Odyssey
-          melody = [392.00, 493.88, 587.33, 659.25, 783.99, 659.25, 587.33, 493.88, 440.00, 523.25, 659.25, 783.99, 698.46, 587.33, 523.25, 440.00];
-          bass = [98.00, 98.00, 110.00, 110.00, 130.81, 130.81, 87.31, 87.31];
-          tempo = 190;
+          // Unique Stage Melodies (Stages 1 to 5+)
+          const stageIndex = (this.currentLevel - 1) % 5;
+          if (stageIndex === 0) {
+            // Stage 1: Soft Cyber Breeze (Cmaj7 - Am7 Pad)
+            melody = [261.63, 329.63, 392.00, 493.88, 523.25, 392.00, 329.63, 261.63, 220.00, 261.63, 329.63, 440.00, 392.00, 329.63, 293.66, 261.63];
+            bass = [130.81, 130.81, 110.00, 110.00, 87.31, 87.31, 98.00, 98.00];
+            tempo = 250;
+          } else if (stageIndex === 1) {
+            // Stage 2: Solar Flare Warm Synth (D minor Pad)
+            melody = [293.66, 349.23, 440.00, 523.25, 587.33, 440.00, 349.23, 293.66, 261.63, 329.63, 392.00, 493.88, 440.00, 349.23, 329.63, 293.66];
+            bass = [146.83, 146.83, 110.00, 110.00, 130.81, 130.81, 98.00, 98.00];
+            tempo = 230;
+          } else if (stageIndex === 2) {
+            // Stage 3: Toxic Alien Void Groove (E minor Pad)
+            melody = [329.63, 392.00, 493.88, 587.33, 659.25, 523.25, 440.00, 392.00, 349.23, 440.00, 523.25, 659.25, 587.33, 493.88, 440.00, 392.00];
+            bass = [164.81, 164.81, 130.81, 130.81, 110.00, 110.00, 146.83, 146.83];
+            tempo = 210;
+          } else if (stageIndex === 3) {
+            // Stage 4: Synth Matrix Hyperdrive (A minor Pad)
+            melody = [440.00, 523.25, 659.25, 783.99, 880.00, 659.25, 523.25, 440.00, 392.00, 493.88, 587.33, 659.25, 523.25, 440.00, 392.00, 349.23];
+            bass = [110.00, 110.00, 146.83, 146.83, 164.81, 164.81, 130.81, 130.81];
+            tempo = 190;
+          } else {
+            // Stage 5: Event Horizon Deep Space (F minor Pad)
+            melody = [392.00, 493.88, 587.33, 659.25, 783.99, 659.25, 587.33, 493.88, 440.00, 523.25, 659.25, 783.99, 698.46, 587.33, 523.25, 440.00];
+            bass = [98.00, 98.00, 110.00, 110.00, 130.81, 130.81, 87.31, 87.31];
+            tempo = 200;
+          }
         }
 
         if (!this.muted && this.ctx) {
@@ -539,14 +565,14 @@
         try {
           const now = this.ctx.currentTime;
 
-          // 1. Soft Lead Melody Note (Warm Pure Sine Wave)
+          // Lead Melody Note
           const leadOsc = this.ctx.createOscillator();
           const leadGain = this.ctx.createGain();
-          leadOsc.type = 'sine';
+          leadOsc.type = this.isBossFight ? 'sawtooth' : 'sine';
           leadOsc.frequency.setValueAtTime(leadFreq, now);
 
           leadGain.gain.setValueAtTime(0.001, now);
-          leadGain.gain.linearRampToValueAtTime(0.035, now + 0.04);
+          leadGain.gain.linearRampToValueAtTime(this.isBossFight ? 0.05 : 0.035, now + 0.04);
           leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
 
           leadOsc.connect(leadGain);
@@ -554,7 +580,7 @@
           leadOsc.start(now);
           leadOsc.stop(now + 0.28);
 
-          // 2. Warm Ambient Bass (Low-pass Filtered Triangle)
+          // Bass Note
           const bassOsc = this.ctx.createOscillator();
           const bassGain = this.ctx.createGain();
           bassOsc.type = 'triangle';
@@ -569,8 +595,8 @@
           bassOsc.start(now);
           bassOsc.stop(now + 0.32);
 
-          // 3. Ambient Soft Whisper Brush Beat
-          if (step % 4 === 0) {
+          // Rhythm Beat
+          if (step % (this.isBossFight ? 2 : 4) === 0) {
             const noiseBuf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * 0.04), this.ctx.sampleRate);
             const data = noiseBuf.getChannelData(0);
             for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -691,6 +717,31 @@
         } catch (e) {}
       }
 
+      playVictoryFanfare() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, idx) => {
+            const time = now + idx * 0.12;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, time);
+
+            gain.gain.setValueAtTime(0.001, time);
+            gain.gain.linearRampToValueAtTime(0.08, time + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(time);
+            osc.stop(time + 0.35);
+          });
+        } catch (e) {}
+      }
+
       playGameOverMusic() {
         this.playGameOver();
       }
@@ -726,15 +777,279 @@
     const audio = new AudioEngine();
 
     /* ==========================================================================
-       2. GAME ENTITIES & COMPONENTS
+       2. STAGE THEMES & BOSS SYSTEM
+       ========================================================================== */
+    const STAGE_THEMES = [
+      {
+        id: 1,
+        name: "CYBER NEBULA",
+        bg: "#080b10",
+        primary: "#00f3ff",
+        secondary: "#ff0055",
+        accent: "#ffea00",
+        star: "#00f3ff",
+        asteroid: "#ff9900",
+        laser: "#00f3ff"
+      },
+      {
+        id: 2,
+        name: "SOLAR FLARE",
+        bg: "#140505",
+        primary: "#ff3300",
+        secondary: "#ffaa00",
+        accent: "#ffff00",
+        star: "#ff6600",
+        asteroid: "#ff4400",
+        laser: "#ff3300"
+      },
+      {
+        id: 3,
+        name: "TOXIC ALIEN VOID",
+        bg: "#051409",
+        primary: "#00ff66",
+        secondary: "#a855f7",
+        accent: "#cc00ff",
+        star: "#00ff66",
+        asteroid: "#88ff00",
+        laser: "#00ff66"
+      },
+      {
+        id: 4,
+        name: "SYNTH MATRIX",
+        bg: "#120417",
+        primary: "#ff00a0",
+        secondary: "#00ffff",
+        accent: "#ffff00",
+        star: "#ff00a0",
+        asteroid: "#ff00a0",
+        laser: "#ff00a0"
+      },
+      {
+        id: 5,
+        name: "EVENT HORIZON",
+        bg: "#0c0a15",
+        primary: "#ffea00",
+        secondary: "#00ff66",
+        accent: "#ff0055",
+        star: "#ffea00",
+        asteroid: "#ffea00",
+        laser: "#ffea00"
+      }
+    ];
+
+    // Stage Boss Flagship Class
+    class BossEnemy {
+      constructor(stage, canvasWidth) {
+        this.stage = stage;
+        this.canvasWidth = canvasWidth;
+        this.x = canvasWidth / 2;
+        this.y = -90;
+        this.targetY = 120;
+        this.radius = 48;
+        this.hp = 25 + stage * 15;
+        this.maxHp = this.hp;
+        this.alive = true;
+        this.vx = 2.8;
+        this.lastShot = Date.now();
+        this.shootInterval = Math.max(600, 1600 - stage * 150);
+
+        const names = [
+          "CYBER MEGALODON",
+          "SOLAR INFERNO CORE",
+          "HIVE MOTHER CORE",
+          "SYNTH SENTINEL",
+          "OMNI VOID CORE"
+        ];
+        const idx = (stage - 1) % names.length;
+        this.name = names[idx];
+        this.title = `STAGE ${stage} BOSS - ${this.name}`;
+      }
+
+      update(enemyLasers) {
+        if (this.y < this.targetY) {
+          this.y += 2.5;
+        } else {
+          this.x += this.vx;
+          if (this.x - this.radius < 25 || this.x + this.radius > this.canvasWidth - 25) {
+            this.vx *= -1;
+          }
+
+          const now = Date.now();
+          if (now - this.lastShot > this.shootInterval) {
+            this.lastShot = now;
+
+            const stageIdx = (this.stage - 1) % 5;
+            if (stageIdx === 0) {
+              // Stage 1: Twin Plasma Lasers
+              enemyLasers.push(new Laser(this.x - 30, this.y + 35, -1, 7, '#00f3ff'));
+              enemyLasers.push(new Laser(this.x + 30, this.y + 35, 1, 7, '#00f3ff'));
+            } else if (stageIdx === 1) {
+              // Stage 2: 3-Way Flame Spread
+              enemyLasers.push(new Laser(this.x, this.y + 40, 0, 7.5, '#ffea00'));
+              enemyLasers.push(new Laser(this.x - 20, this.y + 35, -2, 7, '#ff3300'));
+              enemyLasers.push(new Laser(this.x + 20, this.y + 35, 2, 7, '#ff3300'));
+            } else if (stageIdx === 2) {
+              // Stage 3: Homing Plasma Fan
+              enemyLasers.push(new Laser(this.x - 35, this.y + 35, -2.5, 6.5, '#00ff66'));
+              enemyLasers.push(new Laser(this.x - 12, this.y + 40, -0.8, 7.5, '#00ff66'));
+              enemyLasers.push(new Laser(this.x + 12, this.y + 40, 0.8, 7.5, '#00ff66'));
+              enemyLasers.push(new Laser(this.x + 35, this.y + 35, 2.5, 6.5, '#00ff66'));
+            } else if (stageIdx === 3) {
+              // Stage 4: Rapid Quad Plasma
+              for (let offset of [-40, -15, 15, 40]) {
+                enemyLasers.push(new Laser(this.x + offset, this.y + 35, offset * 0.05, 8, '#ff00a0'));
+              }
+            } else {
+              // Stage 5: Omni 5-Laser Barrage
+              for (let i = -2; i <= 2; i++) {
+                enemyLasers.push(new Laser(this.x + i * 18, this.y + 35, i * 1.5, 7.5, '#ffea00'));
+              }
+            }
+          }
+        }
+      }
+
+      draw(ctx, theme, enableGlow = true) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        if (enableGlow) {
+          ctx.shadowBlur = 18;
+          ctx.shadowColor = theme.primary;
+        }
+
+        const stageIdx = (this.stage - 1) % 5;
+
+        // Stage 1 Boss: Cyber Megalodon
+        if (stageIdx === 0) {
+          ctx.strokeStyle = theme.primary;
+          ctx.fillStyle = '#061c28';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, 45);
+          ctx.lineTo(35, 10);
+          ctx.lineTo(55, -20);
+          ctx.lineTo(25, -40);
+          ctx.lineTo(0, -25);
+          ctx.lineTo(-25, -40);
+          ctx.lineTo(-55, -20);
+          ctx.lineTo(-35, 10);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        // Stage 2 Boss: Solar Inferno Core
+        else if (stageIdx === 1) {
+          ctx.strokeStyle = '#ff3300';
+          ctx.fillStyle = '#260606';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.arc(0, 0, 42, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2 + Date.now() * 0.002;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(angle) * 42, Math.sin(angle) * 42);
+            ctx.lineTo(Math.cos(angle) * 58, Math.sin(angle) * 58);
+            ctx.stroke();
+          }
+        }
+        // Stage 3 Boss: Hive Mother Dreadnought
+        else if (stageIdx === 2) {
+          ctx.strokeStyle = '#00ff66';
+          ctx.fillStyle = '#062612';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, -45);
+          ctx.lineTo(48, -15);
+          ctx.lineTo(32, 40);
+          ctx.lineTo(-32, 40);
+          ctx.lineTo(-48, -15);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        // Stage 4 Boss: Synth Sentinel
+        else if (stageIdx === 3) {
+          ctx.strokeStyle = '#ff00a0';
+          ctx.fillStyle = '#26061c';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, -48);
+          ctx.lineTo(50, 0);
+          ctx.lineTo(0, 48);
+          ctx.lineTo(-50, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        // Stage 5 Boss: Omni Void Core
+        else {
+          ctx.strokeStyle = '#ffea00';
+          ctx.fillStyle = '#1c1806';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.moveTo(0, 48);
+          ctx.lineTo(42, 24);
+          ctx.lineTo(42, -24);
+          ctx.lineTo(0, -48);
+          ctx.lineTo(-42, -24);
+          ctx.lineTo(-42, 24);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+
+        // Inner glowing core
+        ctx.fillStyle = theme.accent;
+        ctx.beginPath();
+        ctx.arc(0, 0, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+
+        // Draw Boss Top Health Bar Overlay
+        const barWidth = 360;
+        const barHeight = 12;
+        const barX = (this.canvasWidth - barWidth) / 2;
+        const barY = 16;
+        const hpPct = Math.max(0, this.hp / this.maxHp);
+
+        ctx.save();
+        ctx.font = 'bold 11px "Press Start 2P", monospace';
+        ctx.fillStyle = theme.primary;
+        ctx.textAlign = 'center';
+        if (enableGlow) {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = theme.primary;
+        }
+        ctx.fillText(this.title, this.canvasWidth / 2, barY - 4);
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.strokeStyle = theme.primary;
+        ctx.lineWidth = 2;
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+        ctx.strokeRect(barX, barY, barWidth, barHeight);
+
+        ctx.fillStyle = theme.primary;
+        ctx.fillRect(barX + 2, barY + 2, (barWidth - 4) * hpPct, barHeight - 4);
+        ctx.restore();
+      }
+    }
+
+    /* ==========================================================================
+       3. GAME ENTITIES & COMPONENTS
        ========================================================================== */
 
-    // Starfield Parallax System
+    // Starfield & Dynamic Stage Background System
     class Starfield {
       constructor(width, height) {
         this.width = width;
         this.height = height;
         this.stars = [];
+        this.nebulaOrbs = [];
         this.init();
       }
 
@@ -745,11 +1060,18 @@
           this.stars.push({
             x: Math.random() * this.width,
             y: Math.random() * this.height,
-            size: Math.random() * 2 + 0.5,
-            speed: Math.random() * 2 + 0.5,
+            size: Math.random() * 2.5 + 0.8,
+            speed: Math.random() * 2.5 + 0.8,
             alpha: Math.random() * 0.8 + 0.2
           });
         }
+
+        // Ambient Nebula Position Points
+        this.nebulaOrbs = [
+          { x: this.width * 0.2, y: this.height * 0.3, radius: 180 },
+          { x: this.width * 0.8, y: this.height * 0.7, radius: 220 },
+          { x: this.width * 0.5, y: this.height * 0.5, radius: 150 }
+        ];
       }
 
       update() {
@@ -763,13 +1085,99 @@
         }
       }
 
-      draw(ctx) {
+      draw(ctx, theme) {
         ctx.save();
+        const currentTheme = theme || STAGE_THEMES[0];
+        const stageId = currentTheme.id;
+
+        // 1. Unique Stage Background Radial Gradient Fill
+        const bgGrad = ctx.createRadialGradient(
+          this.width / 2, this.height / 2, 50,
+          this.width / 2, this.height / 2, this.height * 0.75
+        );
+        bgGrad.addColorStop(0, currentTheme.bg);
+        bgGrad.addColorStop(1, '#020306');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        // 2. Stage-Specific Atmospheric Graphic Overlays
+        if (stageId === 1) {
+          // Stage 1: Cyber Nebula Soft Glowing Clouds
+          for (let orb of this.nebulaOrbs) {
+            const grad = ctx.createRadialGradient(orb.x, orb.y, 10, orb.x, orb.y, orb.radius);
+            grad.addColorStop(0, 'rgba(0, 243, 255, 0.08)');
+            grad.addColorStop(1, 'rgba(0, 243, 255, 0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, this.width, this.height);
+          }
+        } else if (stageId === 2) {
+          // Stage 2: Solar Heat Flare Gradients
+          const solarGrad = ctx.createLinearGradient(0, 0, 0, this.height);
+          solarGrad.addColorStop(0, 'rgba(255, 68, 0, 0.16)');
+          solarGrad.addColorStop(0.6, 'rgba(255, 170, 0, 0.05)');
+          solarGrad.addColorStop(1, 'rgba(20, 5, 5, 0)');
+          ctx.fillStyle = solarGrad;
+          ctx.fillRect(0, 0, this.width, this.height);
+        } else if (stageId === 3) {
+          // Stage 3: Toxic Acid Bio-Dust
+          for (let orb of this.nebulaOrbs) {
+            const grad = ctx.createRadialGradient(orb.x, orb.y, 10, orb.x, orb.y, orb.radius);
+            grad.addColorStop(0, 'rgba(0, 255, 102, 0.09)');
+            grad.addColorStop(0.7, 'rgba(168, 85, 247, 0.04)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, this.width, this.height);
+          }
+        } else if (stageId === 4) {
+          // Stage 4: Synth Matrix 3D Perspective Grid
+          ctx.strokeStyle = 'rgba(255, 0, 160, 0.18)';
+          ctx.lineWidth = 1;
+          const gridSpacing = 40;
+          for (let x = 0; x < this.width; x += gridSpacing) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, this.height);
+            ctx.stroke();
+          }
+          const timeOffset = (Date.now() * 0.05) % gridSpacing;
+          for (let y = timeOffset; y < this.height; y += gridSpacing) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(this.width, y);
+            ctx.stroke();
+          }
+        } else if (stageId === 5) {
+          // Stage 5: Event Horizon Vortex Gradient
+          const vortexGrad = ctx.createRadialGradient(
+            this.width / 2, this.height / 2, 20,
+            this.width / 2, this.height / 2, 350
+          );
+          vortexGrad.addColorStop(0, 'rgba(255, 234, 0, 0.14)');
+          vortexGrad.addColorStop(0.6, 'rgba(12, 10, 21, 0.8)');
+          vortexGrad.addColorStop(1, 'rgba(4, 3, 8, 1)');
+          ctx.fillStyle = vortexGrad;
+          ctx.fillRect(0, 0, this.width, this.height);
+        }
+
+        // 3. Stage-Specific Stars Rendering
         for (let i = 0; i < this.stars.length; i++) {
           const star = this.stars[i];
-          ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-          ctx.fillRect(star.x, star.y, star.size, star.size);
+          ctx.fillStyle = currentTheme.star;
+          ctx.globalAlpha = star.alpha;
+
+          if (stageId === 4) {
+            // Stage 4 Matrix Hyperdrive Streak Lines
+            ctx.strokeStyle = currentTheme.star;
+            ctx.lineWidth = star.size;
+            ctx.beginPath();
+            ctx.moveTo(star.x, star.y);
+            ctx.lineTo(star.x, star.y + star.speed * 3.5);
+            ctx.stroke();
+          } else {
+            ctx.fillRect(star.x, star.y, star.size, star.size);
+          }
         }
+
         ctx.restore();
       }
     }
@@ -821,10 +1229,6 @@
         if (this.shieldTimer > 0) {
           this.shieldTimer -= deltaTime;
           if (this.shieldTimer <= 0) this.shieldActive = false;
-        }
-        if (this.tripleShotTimer > 0) {
-          this.tripleShotTimer -= deltaTime;
-          if (this.tripleShotTimer <= 0) this.tripleShotActive = false;
         }
       }
 
@@ -1225,6 +1629,13 @@
         this.multiplier = 1;
         this.lastComboTime = 0;
 
+        // Stage & Timer System
+        this.stage = 1;
+        this.stageTimer = 30.0; // 30 seconds per level
+        this.isBossActive = false;
+        this.boss = null;
+        this.currentTheme = STAGE_THEMES[0];
+
         // Difficulty scaling
         this.level = 1;
         this.spawnTimer = 0;
@@ -1379,6 +1790,13 @@
         this.level = 1;
         this.spawnInterval = 1200;
 
+        // Stage Reset
+        this.stage = 1;
+        this.stageTimer = 30.0;
+        this.isBossActive = false;
+        this.boss = null;
+        this.currentTheme = STAGE_THEMES[0];
+
         this.player.reset();
         this.playerLasers = [];
         this.enemyLasers = [];
@@ -1388,13 +1806,43 @@
         this.floatingTexts = [];
 
         this.state = 'PLAYING';
-        audio.startBGM(1);
+        audio.startBGM(1, false);
         this.updateHUD();
 
         document.getElementById('screen-start').classList.add('hidden');
         document.getElementById('screen-gameover').classList.add('hidden');
         document.getElementById('screen-pause').classList.add('hidden');
         document.getElementById('screen-restart-confirm').classList.add('hidden');
+      }
+
+      startBossFight() {
+        this.isBossActive = true;
+        this.enemies = [];
+        this.boss = new BossEnemy(this.stage, this.canvas.width);
+        audio.startBGM(this.stage, true);
+        this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 220, '⚠️ WARNING! BOSS INCOMING!', '#ff0055'));
+        this.updateHUD();
+      }
+
+      onBossDefeated() {
+        audio.playVictoryFanfare();
+        this.triggerExplosion(this.boss.x, this.boss.y, this.currentTheme.primary, 30);
+        this.screenShake = 25;
+        this.addScore(2500 * this.stage, this.boss.x, this.boss.y);
+
+        this.stage++;
+        this.isBossActive = false;
+        this.boss = null;
+        this.stageTimer = 30.0;
+
+        const themeIdx = (this.stage - 1) % STAGE_THEMES.length;
+        this.currentTheme = STAGE_THEMES[themeIdx];
+
+        const bannerTxt = this.stage > 5 ? `STAGE ${this.stage} (INFINITE MODE)` : `STAGE ${this.stage - 1} CLEARED!`;
+        this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 220, bannerTxt, '#00ff66'));
+
+        audio.startBGM(this.stage, false);
+        this.updateHUD();
       }
 
       pauseGame() {
@@ -1433,37 +1881,46 @@
           this.player.lastShotTime = now;
           audio.playLaser();
 
+          const laserColor = this.currentTheme.laser;
           if (this.player.tripleShotActive) {
-            this.playerLasers.push(new Laser(this.player.x - 14, this.player.y - 15, -2, -15));
-            this.playerLasers.push(new Laser(this.player.x, this.player.y - 22, 0, -16));
-            this.playerLasers.push(new Laser(this.player.x + 14, this.player.y - 15, 2, -15));
+            this.playerLasers.push(new Laser(this.player.x - 14, this.player.y - 15, -2, -15, laserColor));
+            this.playerLasers.push(new Laser(this.player.x, this.player.y - 22, 0, -16, laserColor));
+            this.playerLasers.push(new Laser(this.player.x + 14, this.player.y - 15, 2, -15, laserColor));
           } else {
-            this.playerLasers.push(new Laser(this.player.x, this.player.y - 20, 0, -16));
+            this.playerLasers.push(new Laser(this.player.x, this.player.y - 20, 0, -16, laserColor));
           }
         }
       }
 
       spawnEnemy() {
-        const levelMult = 1 + (this.level - 1) * 0.15;
+        const levelMult = 1 + (this.stage - 1) * 0.2;
         const x = 30 + Math.random() * (this.canvas.width - 60);
 
         const rand = Math.random();
         let type = 'ASTEROID';
-        if (rand > 0.75 && this.level >= 2) type = 'SCOUT';
-        if (rand > 0.90 && this.level >= 3) type = 'DREADNOUGHT';
+        if (rand > 0.70 && this.stage >= 2) type = 'SCOUT';
+        if (rand > 0.88 && this.stage >= 3) type = 'DREADNOUGHT';
 
-        this.enemies.push(new Enemy(x, -30, type, levelMult));
+        const enemy = new Enemy(x, -30, type, levelMult);
+        if (type === 'ASTEROID') {
+          enemy.color = this.currentTheme.asteroid;
+        }
+        this.enemies.push(enemy);
       }
 
       triggerExplosion(x, y, color = '#ff9900', count = 15) {
         audio.playExplosion();
-        for (let i = 0; i < count; i++) {
+        const particleCap = this.glowEnabled ? 60 : 30;
+        if (this.particles.length > particleCap) {
+          this.particles.splice(0, this.particles.length - particleCap);
+        }
+        const spawnCount = Math.min(count, 15);
+        for (let i = 0; i < spawnCount; i++) {
           this.particles.push(new Particle(x, y, color));
         }
       }
 
       addScore(pts, x, y) {
-        // Combo multiplier calculation
         const now = Date.now();
         if (now - this.lastComboTime < 2500) {
           this.combo++;
@@ -1479,15 +1936,6 @@
         const earned = pts * this.multiplier;
         this.score += earned;
         if (this.score > this.highScore) this.highScore = this.score;
-
-        // Level up check every 1500 points
-        const newLevel = 1 + Math.floor(this.score / 1500);
-        if (newLevel > this.level) {
-          this.level = newLevel;
-          this.spawnInterval = Math.max(400, 1200 - (this.level - 1) * 120);
-          audio.setMusicLevel(this.level);
-          this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 200, `WAVE ${this.level} ENGAGED!`, '#00f3ff'));
-        }
 
         if (x && y) {
           const txt = this.multiplier > 1 ? `+${earned} (x${this.multiplier})` : `+${earned}`;
@@ -1507,6 +1955,16 @@
         });
         this.enemies = [];
         this.enemyLasers = [];
+
+        // Also damage boss if present
+        if (this.isBossActive && this.boss && this.boss.alive) {
+          this.boss.hp -= 15;
+          if (this.boss.hp <= 0) {
+            this.boss.alive = false;
+            this.onBossDefeated();
+          }
+        }
+
         this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 300, 'TACTICAL NUKE CLEARED SCREEN!', '#00ff66'));
         this.updateHUD();
       }
@@ -1524,11 +1982,12 @@
         }
 
         this.lives--;
+        this.player.tripleShotActive = false; // Reset weapon power-up on life lost!
         this.combo = 0;
         this.multiplier = 1;
         this.screenShake = 15;
         audio.playHit();
-        this.player.invulnerableTimer = 1800; // Invulnerability frames
+        this.player.invulnerableTimer = 1800;
 
         this.updateHUD();
 
@@ -1551,7 +2010,18 @@
           multElem.classList.add('hidden');
         }
 
-        // Lives HUD Hearts
+        const stageLabel = document.getElementById('hud-stage-label');
+        if (stageLabel) {
+          stageLabel.textContent = `STAGE ${this.stage}`;
+          stageLabel.style.color = this.currentTheme.primary;
+        }
+
+        const timerElem = document.getElementById('hud-timer');
+        if (timerElem) {
+          timerElem.textContent = this.isBossActive ? 'BOSS BATTLE' : `${Math.ceil(this.stageTimer)}s`;
+          timerElem.style.color = this.isBossActive ? '#ff0055' : this.currentTheme.accent;
+        }
+
         const heartsContainer = document.getElementById('hud-lives');
         heartsContainer.innerHTML = '';
         for (let i = 0; i < 3; i++) {
@@ -1571,6 +2041,16 @@
         // Screen shake decay
         if (this.screenShake > 0) this.screenShake -= deltaTime * 0.05;
 
+        // Stage 30-Second Countdown Timer
+        if (!this.isBossActive) {
+          this.stageTimer -= deltaTime / 1000;
+          if (this.stageTimer <= 0) {
+            this.stageTimer = 0;
+            this.startBossFight();
+          }
+        }
+        this.updateHUD();
+
         // Update Starfield & Player
         this.starfield.update();
         this.player.update(this.keys, deltaTime);
@@ -1580,11 +2060,18 @@
           this.firePlayerLaser();
         }
 
-        // Spawn Enemies
-        this.spawnTimer += deltaTime;
-        if (this.spawnTimer >= this.spawnInterval) {
-          this.spawnTimer = 0;
-          this.spawnEnemy();
+        // Spawn Standard Enemies (Only during non-boss phase)
+        if (!this.isBossActive) {
+          this.spawnTimer += deltaTime;
+          if (this.spawnTimer >= this.spawnInterval) {
+            this.spawnTimer = 0;
+            this.spawnEnemy();
+          }
+        }
+
+        // Update Boss
+        if (this.isBossActive && this.boss) {
+          this.boss.update(this.enemyLasers);
         }
 
         // Update Player Lasers
@@ -1611,11 +2098,32 @@
 
         // --- COLLISIONS ---
 
-        // 1. Player Laser vs Enemy (Rocks / Space Hazards)
+        // 1. Player Laser vs Boss Flagship
+        if (this.isBossActive && this.boss && this.boss.alive) {
+          for (let l of this.playerLasers) {
+            if (!l.alive) continue;
+            const dist = Math.hypot(l.x - this.boss.x, (l.y + l.height / 2) - this.boss.y);
+            if (dist < this.boss.radius + 15) {
+              l.alive = false;
+              this.boss.hp--;
+
+              for (let i = 0; i < 4; i++) {
+                this.particles.push(new Particle(l.x, l.y, this.currentTheme.primary));
+              }
+
+              if (this.boss.hp <= 0) {
+                this.boss.alive = false;
+                this.onBossDefeated();
+                break;
+              }
+            }
+          }
+        }
+
+        // 2. Player Laser vs Enemy (Rocks / Space Hazards)
         for (let l of this.playerLasers) {
           for (let e of this.enemies) {
             if (!l.alive || !e.alive) continue;
-            // Check distance between laser center and enemy center
             const laserCenterY = l.y + l.height / 2;
             const dist = Math.hypot(l.x - e.x, laserCenterY - e.y);
             const hitThreshold = e.radius + Math.max(l.width, l.height / 2) + 4;
@@ -1623,9 +2131,8 @@
               l.alive = false;
               e.hp--;
 
-              // Spark FX
               for (let i = 0; i < 4; i++) {
-                this.particles.push(new Particle(l.x, l.y, '#00f3ff'));
+                this.particles.push(new Particle(l.x, l.y, this.currentTheme.primary));
               }
 
               if (e.hp <= 0) {
@@ -1634,7 +2141,6 @@
                 this.triggerExplosion(e.x, e.y, e.color);
                 this.addScore(e.points, e.x, e.y);
 
-                // Split Asteroids into 2 smaller ones
                 if (e.type === 'ASTEROID' && e.radius > 20) {
                   for (let i = 0; i < 2; i++) {
                     const child = new Enemy(e.x + (i === 0 ? -10 : 10), e.y, 'ASTEROID', 1);
@@ -1642,11 +2148,11 @@
                     child.speed = e.speed * 1.3;
                     child.vx = (i === 0 ? -1.8 : 1.8);
                     child.points = 50;
+                    child.color = this.currentTheme.asteroid;
                     this.enemies.push(child);
                   }
                 }
 
-                // Chance to drop PowerUp (~15%)
                 if (Math.random() < 0.15) {
                   const types = ['SHIELD', 'TRIPLE', 'HEART', 'BOMB'];
                   const chosenType = types[Math.floor(Math.random() * types.length)];
@@ -1657,7 +2163,14 @@
           }
         }
 
-        // 2. Enemy vs Player Body Collision
+        // 3. Enemy / Boss vs Player Body Collision
+        if (this.isBossActive && this.boss && this.boss.alive) {
+          const dist = Math.hypot(this.player.x - this.boss.x, this.player.y - this.boss.y);
+          if (dist < this.boss.radius + this.player.width / 2) {
+            this.playerHit();
+          }
+        }
+
         for (let e of this.enemies) {
           if (!e.alive) continue;
           const dist = Math.hypot(this.player.x - e.x, this.player.y - e.y);
@@ -1668,7 +2181,7 @@
           }
         }
 
-        // 3. Enemy Plasma Laser vs Player
+        // 4. Enemy Plasma Laser vs Player
         for (let el of this.enemyLasers) {
           if (!el.alive) continue;
           const dist = Math.hypot(this.player.x - el.x, this.player.y - el.y);
@@ -1678,7 +2191,7 @@
           }
         }
 
-        // 4. Player vs PowerUp Pickup
+        // 5. Player vs PowerUp Pickup
         for (let p of this.powerups) {
           if (!p.alive) continue;
           const dist = Math.hypot(this.player.x - p.x, this.player.y - p.y);
@@ -1692,8 +2205,7 @@
               this.floatingTexts.push(new FloatingText(this.player.x, this.player.y - 25, 'SHIELD ACTIVATED!', '#00f3ff'));
             } else if (p.type === 'TRIPLE') {
               this.player.tripleShotActive = true;
-              this.player.tripleShotTimer = 8000;
-              this.floatingTexts.push(new FloatingText(this.player.x, this.player.y - 25, 'TRIPLE SHOT!', '#ffea00'));
+              this.floatingTexts.push(new FloatingText(this.player.x, this.player.y - 25, 'TRIPLE PLASMA ENGAGED!', '#ffea00'));
             } else if (p.type === 'HEART') {
               if (this.lives < 3) this.lives++;
               this.updateHUD();
@@ -1704,21 +2216,7 @@
           }
         }
 
-        // Cleanup dead enemies
         this.enemies = this.enemies.filter(e => e.alive);
-      }
-
-      triggerExplosion(x, y, color = '#ff9900', count = 12) {
-        audio.playExplosion();
-        // Cap max active particles for smooth FPS on low end hardware
-        const particleCap = this.glowEnabled ? 60 : 30;
-        if (this.particles.length > particleCap) {
-          this.particles.splice(0, this.particles.length - particleCap);
-        }
-        const spawnCount = Math.min(count, 12);
-        for (let i = 0; i < spawnCount; i++) {
-          this.particles.push(new Particle(x, y, color));
-        }
       }
 
       draw() {
@@ -1731,18 +2229,24 @@
           this.ctx.translate(rx, ry);
         }
 
-        // Clear Canvas
-        this.ctx.fillStyle = '#080b10';
+        // Clear Canvas with Current Stage Background Color
+        this.ctx.fillStyle = this.currentTheme.bg;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw Game Objects with performance flag
-        this.starfield.draw(this.ctx);
+        // Draw Game Objects with performance flag & stage theme
+        this.starfield.draw(this.ctx, this.currentTheme);
         const glow = this.glowEnabled;
 
         for (let i = 0; i < this.powerups.length; i++) this.powerups[i].draw(this.ctx);
         for (let i = 0; i < this.playerLasers.length; i++) this.playerLasers[i].draw(this.ctx, glow);
         for (let i = 0; i < this.enemyLasers.length; i++) this.enemyLasers[i].draw(this.ctx, glow);
         for (let i = 0; i < this.enemies.length; i++) this.enemies[i].draw(this.ctx, glow);
+
+        // Draw Boss if active
+        if (this.isBossActive && this.boss) {
+          this.boss.draw(this.ctx, this.currentTheme, glow);
+        }
+
         this.player.draw(this.ctx, glow);
         for (let i = 0; i < this.particles.length; i++) this.particles[i].draw(this.ctx, false);
         for (let i = 0; i < this.floatingTexts.length; i++) this.floatingTexts[i].draw(this.ctx);
