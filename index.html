@@ -1262,8 +1262,14 @@
             }
           }
 
-          // Pause Game via P or ESC
+          // Pause Game or Dismiss Modals via P or ESC
           if (e.code === 'KeyP' || e.code === 'Escape') {
+            const confirmModal = document.getElementById('screen-restart-confirm');
+            if (confirmModal && !confirmModal.classList.contains('hidden')) {
+              this.cancelRestart();
+              return;
+            }
+
             if (this.state === 'PLAYING') {
               this.pauseGame();
             } else if (this.state === 'PAUSED') {
