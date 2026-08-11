@@ -348,21 +348,22 @@
 
     /* Pilot Profile Header Card (Sci-Fi Cyber HUD Banner) */
     .pilot-profile-card {
-      background: linear-gradient(135deg, rgba(0, 243, 255, 0.08) 0%, rgba(10, 16, 26, 0.85) 100%);
-      border: 1px solid rgba(0, 243, 255, 0.35);
-      border-radius: 12px;
-      padding: 12px 22px;
-      margin-bottom: 25px;
+      background: radial-gradient(circle at 0% 50%, rgba(0, 243, 255, 0.15) 0%, rgba(8, 14, 26, 0.94) 100%);
+      border: 1px solid rgba(0, 243, 255, 0.45);
+      border-radius: 14px;
+      padding: 12px 18px;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      max-width: 480px;
+      gap: 14px;
+      max-width: 560px;
       width: 100%;
       box-shadow: 
-        0 0 20px rgba(0, 243, 255, 0.15),
-        inset 0 0 15px rgba(0, 243, 255, 0.05);
-      backdrop-filter: blur(10px);
+        0 0 30px rgba(0, 243, 255, 0.2),
+        0 10px 25px rgba(0, 0, 0, 0.7),
+        inset 0 0 20px rgba(0, 243, 255, 0.08);
+      backdrop-filter: blur(14px);
       position: relative;
       overflow: hidden;
     }
@@ -374,39 +375,50 @@
       left: 0;
       width: 4px;
       height: 100%;
-      background: var(--primary);
-      box-shadow: 0 0 10px var(--primary);
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      box-shadow: 0 0 12px var(--primary);
     }
 
     .pilot-info {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       text-align: left;
+      flex: 1;
+      min-width: 0;
     }
 
     .pilot-avatar {
-      font-size: 1.6rem;
-      background: rgba(0, 243, 255, 0.12);
-      width: 46px;
-      height: 46px;
+      font-size: 1.5rem;
+      background: radial-gradient(circle, rgba(0, 243, 255, 0.25) 0%, rgba(5, 10, 20, 0.85) 100%);
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 2px solid var(--primary);
-      box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+    }
+
+    .pilot-details {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
     }
 
     .pilot-name-row {
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
     }
 
     .status-dot {
       width: 8px;
       height: 8px;
+      min-width: 8px;
       border-radius: 50%;
       background: var(--green);
       box-shadow: 0 0 8px var(--green);
@@ -420,89 +432,201 @@
 
     .pilot-name {
       font-family: var(--font-arcade);
-      font-size: 0.85rem;
-      color: var(--primary);
+      font-size: 0.72rem;
+      color: #ffffff;
       letter-spacing: 0.5px;
-      text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+      white-space: nowrap;
     }
 
     .pilot-rank {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--accent);
       font-family: var(--font-tech);
       margin-top: 3px;
       letter-spacing: 1px;
       font-weight: 700;
+      white-space: nowrap;
     }
 
-    /* Cyberpunk Auth Terminal Frame Modal */
+    .btn-pilot-auth {
+      font-family: var(--font-arcade);
+      font-size: 0.72rem;
+      padding: 11px 18px;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.18) 0%, rgba(0, 102, 255, 0.28) 100%);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.25);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
+    }
+
+    .btn-pilot-auth:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.35) 0%, rgba(0, 102, 255, 0.5) 100%);
+      box-shadow: 0 0 24px rgba(0, 243, 255, 0.55);
+      color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .btn-pilot-logout {
+      font-family: var(--font-arcade);
+      font-size: 0.72rem;
+      padding: 11px 18px;
+      background: linear-gradient(135deg, rgba(255, 0, 85, 0.15) 0%, rgba(200, 0, 50, 0.25) 100%);
+      color: var(--secondary);
+      border: 1px solid var(--secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.25);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
+    }
+
+    .btn-pilot-logout:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(255, 0, 85, 0.35) 0%, rgba(200, 0, 50, 0.5) 100%);
+      box-shadow: 0 0 24px rgba(255, 0, 85, 0.55);
+      color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    /* Cyberpunk Holographic Auth Terminal Frame Modal */
     .auth-modal-card {
-      background: linear-gradient(180deg, rgba(12, 16, 26, 0.96) 0%, rgba(6, 9, 15, 0.98) 100%);
+      background: radial-gradient(circle at 50% 0%, rgba(16, 24, 42, 0.96) 0%, rgba(6, 9, 16, 0.98) 100%);
       border: 1px solid rgba(0, 243, 255, 0.5);
-      border-radius: 12px;
-      padding: 32px 36px;
-      width: 100%;
+      border-radius: 16px;
+      padding: 32px 34px;
+      width: 90%;
       max-width: 440px;
       box-shadow: 
-        0 0 40px rgba(0, 243, 255, 0.25),
-        inset 0 0 30px rgba(0, 243, 255, 0.05);
-      backdrop-filter: blur(16px);
+        0 0 50px rgba(0, 243, 255, 0.22),
+        0 20px 40px rgba(0, 0, 0, 0.8),
+        inset 0 0 30px rgba(0, 243, 255, 0.08);
+      backdrop-filter: blur(20px);
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+      overflow: hidden;
+      animation: modalSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .auth-modal-card::after {
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Top Animated Neon Scan Bar */
+    .auth-modal-card::before {
       content: '';
       position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff00a0, #00f3ff, #ffea00, #ff00a0);
+      background-size: 200% 100%;
+      animation: neonGlowScan 3s linear infinite;
     }
 
+    @keyframes neonGlowScan {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .auth-badge {
+      font-family: var(--font-arcade);
+      font-size: 0.62rem;
+      color: var(--primary);
+      background: rgba(0, 243, 255, 0.12);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      padding: 4px 12px;
+      border-radius: 12px;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+
+    .auth-modal-title {
+      font-family: var(--font-arcade);
+      font-size: 1.25rem;
+      color: #ffffff;
+      text-shadow: 0 0 12px var(--primary);
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+
+    .auth-modal-subtitle {
+      font-size: 0.75rem;
+      color: #8a9ba8;
+      font-family: var(--font-tech);
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* Segmented Tab Switcher */
     .auth-tabs {
       display: flex;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(0, 243, 255, 0.25);
-      border-radius: 8px;
-      padding: 4px;
-      margin: 20px 0 24px 0;
+      background: rgba(4, 8, 16, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      border-radius: 10px;
+      padding: 5px;
+      margin-bottom: 22px;
       width: 100%;
+      gap: 6px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
     }
 
     .auth-tab-btn {
       flex: 1;
       font-family: var(--font-arcade);
-      font-size: 0.78rem;
-      padding: 12px 16px;
+      font-size: 0.72rem;
+      padding: 10px 14px;
       background: transparent;
-      color: #8a9ba8;
-      border: none;
-      border-radius: 6px;
+      color: #718096;
+      border: 1px solid transparent;
+      border-radius: 7px;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .auth-tab-btn:hover {
       color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .auth-tab-btn.active {
-      background: rgba(0, 243, 255, 0.2);
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.22) 0%, rgba(0, 100, 200, 0.35) 100%);
       color: var(--primary);
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-      border: 1px solid var(--primary);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.35);
+      border-color: var(--primary);
+      text-shadow: 0 0 8px var(--primary);
     }
 
     .auth-form {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       width: 100%;
       text-align: left;
     }
@@ -510,12 +634,12 @@
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .form-label {
       font-family: var(--font-arcade);
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -533,30 +657,34 @@
     .input-icon {
       position: absolute;
       left: 14px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--primary);
       pointer-events: none;
+      filter: drop-shadow(0 0 6px var(--primary));
     }
 
     .form-input {
       width: 100%;
-      background: rgba(5, 8, 14, 0.95);
-      border: 1px solid rgba(0, 243, 255, 0.3);
-      border-radius: 6px;
+      background: rgba(6, 11, 20, 0.9);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      border-left: 3px solid var(--primary);
+      border-radius: 8px;
       padding: 12px 14px 12px 42px;
       color: #ffffff;
       font-family: var(--font-tech);
-      font-size: 1rem;
+      font-size: 0.95rem;
       outline: none;
-      transition: all 0.2s ease;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      transition: all 0.25s ease;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     .form-input:focus {
       border-color: var(--primary);
+      border-left-color: var(--accent);
       box-shadow: 
-        0 0 15px rgba(0, 243, 255, 0.4),
+        0 0 18px rgba(0, 243, 255, 0.35),
         inset 0 0 10px rgba(0, 243, 255, 0.1);
+      background: rgba(10, 18, 32, 0.95);
     }
 
     .avatar-selector {
@@ -570,26 +698,75 @@
       font-size: 1.4rem;
       padding: 10px 0;
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .avatar-option:hover {
       border-color: var(--primary);
-      background: rgba(0, 243, 255, 0.1);
+      background: rgba(0, 243, 255, 0.12);
       transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.25);
     }
 
     .avatar-option.selected {
       border-color: var(--accent);
       background: rgba(255, 234, 0, 0.2);
-      box-shadow: 0 0 15px rgba(255, 234, 0, 0.5);
-      transform: scale(1.05);
+      box-shadow: 0 0 16px rgba(255, 234, 0, 0.4);
+      transform: scale(1.06);
+    }
+
+    .auth-action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .btn-auth-primary {
+      flex: 1;
+      font-family: var(--font-arcade);
+      font-size: 0.8rem;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #00f3ff 0%, #0066ff 100%);
+      color: #030812;
+      font-weight: 800;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      letter-spacing: 0.5px;
+    }
+
+    .btn-auth-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 28px rgba(0, 243, 255, 0.7);
+      background: linear-gradient(135deg, #33f6ff 0%, #1a75ff 100%);
+    }
+
+    .btn-auth-secondary {
+      font-family: var(--font-arcade);
+      font-size: 0.8rem;
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #a0aec0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-auth-secondary:hover {
+      border-color: #ffffff;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .auth-msg {
@@ -611,6 +788,94 @@
     .auth-msg.error {
       color: var(--secondary);
       text-shadow: 0 0 8px var(--secondary);
+    }
+
+    /* Difficulty Mode Selector Styling */
+    .difficulty-card {
+      background: rgba(10, 16, 28, 0.88);
+      border: 1px solid rgba(0, 243, 255, 0.35);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 25px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.05);
+      backdrop-filter: blur(8px);
+      text-align: center;
+    }
+
+    .difficulty-title {
+      font-family: var(--font-arcade);
+      font-size: 0.65rem;
+      color: var(--primary);
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+    }
+
+    .difficulty-selector {
+      display: flex;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 8px;
+      padding: 4px;
+      width: 100%;
+    }
+
+    .difficulty-btn {
+      flex: 1;
+      font-family: var(--font-arcade);
+      font-size: 0.72rem;
+      padding: 10px 8px;
+      background: transparent;
+      color: #8a9ba8;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      outline: none;
+    }
+
+    .difficulty-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .difficulty-btn.active[data-diff="EASY"] {
+      background: rgba(16, 185, 129, 0.22);
+      color: #10b981;
+      border-color: #10b981;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+    }
+
+    .difficulty-btn.active[data-diff="NORMAL"] {
+      background: rgba(255, 234, 0, 0.2);
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 14px rgba(255, 234, 0, 0.4);
+    }
+
+    .difficulty-btn.active[data-diff="HARD"] {
+      background: rgba(255, 0, 85, 0.22);
+      color: var(--secondary);
+      border-color: var(--secondary);
+      box-shadow: 0 0 14px rgba(255, 0, 85, 0.4);
+    }
+
+    .difficulty-desc {
+      font-family: var(--font-tech);
+      font-size: 0.76rem;
+      color: #cbd5e1;
+      margin-top: 10px;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
   </style>
 </head>
@@ -666,7 +931,7 @@
       <div class="pilot-profile-card">
         <div class="pilot-info">
           <span id="start-pilot-avatar" class="pilot-avatar">👨‍✈️</span>
-          <div>
+          <div class="pilot-details">
             <div class="pilot-name-row">
               <span class="status-dot"></span>
               <span id="start-pilot-name" class="pilot-name">GUEST COMMANDER</span>
@@ -675,8 +940,8 @@
           </div>
         </div>
         <div>
-          <button id="btn-open-auth" class="btn-arcade" style="font-size: 0.72rem; padding: 10px 16px; border-color: var(--primary); color: var(--primary); background: rgba(0, 243, 255, 0.1);">🔑 LOGIN / REGISTER</button>
-          <button id="btn-pilot-logout" class="btn-arcade hidden" style="font-size: 0.72rem; padding: 10px 16px; border-color: var(--secondary); color: var(--secondary); background: rgba(255, 0, 85, 0.1);">🚪 LOGOUT</button>
+          <button id="btn-open-auth" class="btn-pilot-auth">🔑 LOGIN / REGISTER</button>
+          <button id="btn-pilot-logout" class="btn-pilot-logout hidden">🚪 LOGOUT</button>
         </div>
       </div>
 
@@ -699,6 +964,19 @@
           <div>
             <span class="key-badge">P</span> or <span class="key-badge">ESC</span>
           </div>
+        </div>
+      </div>
+
+      <!-- Mission Difficulty Selector Card -->
+      <div class="difficulty-card">
+        <div class="difficulty-title">⚡ SELECT MISSION DIFFICULTY</div>
+        <div class="difficulty-selector">
+          <button type="button" class="difficulty-btn" data-diff="EASY">🟢 EASY</button>
+          <button type="button" class="difficulty-btn active" data-diff="NORMAL">🟡 NORMAL</button>
+          <button type="button" class="difficulty-btn" data-diff="HARD">🔴 HARD</button>
+        </div>
+        <div id="difficulty-desc" class="difficulty-desc">
+          <span>❤️ 3 LIVES</span> • <span>⚡ 100% ENEMY SPEED</span> • <span style="color: var(--accent);">⭐ 1.5x SCORE MULTIPLIER</span>
         </div>
       </div>
 
@@ -752,8 +1030,9 @@
     <!-- Pilot Login / Register Modal Overlay -->
     <div id="screen-auth" class="screen-overlay hidden" style="z-index: 25;">
       <div class="auth-modal-card">
-        <h2 class="game-title" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 6px;">FLEET PILOT LOGIN</h2>
-        <p class="subtitle" style="font-size: 0.8rem; margin-bottom: 0; color: #8a9ba8;">ENTER COMMANDER CREDENTIALS</p>
+        <div class="auth-badge">SECURITY LEVEL: ALPHA-1</div>
+        <h2 class="auth-modal-title">FLEET COMMAND ACCESS</h2>
+        <p class="auth-modal-subtitle">ENTER COMMANDER CREDENTIALS</p>
 
         <!-- Auth Mode Tabs -->
         <div class="auth-tabs">
@@ -798,9 +1077,9 @@
 
           <div id="auth-msg" class="auth-msg"></div>
 
-          <div style="display: flex; gap: 12px; margin-top: 12px; justify-content: center; width: 100%;">
-            <button type="submit" id="btn-auth-submit" class="btn-arcade" style="flex: 1; font-size: 0.85rem; padding: 14px 20px; border-color: var(--accent); color: var(--accent); background: rgba(255, 234, 0, 0.1);">LOG IN PILOT</button>
-            <button type="button" id="btn-auth-cancel" class="btn-arcade" style="padding: 14px 18px; font-size: 0.85rem; border-color: rgba(255, 255, 255, 0.3); color: #a0aec0;">CANCEL</button>
+          <div class="auth-action-row">
+            <button type="submit" id="btn-auth-submit" class="btn-auth-primary">LOG IN PILOT</button>
+            <button type="button" id="btn-auth-cancel" class="btn-auth-secondary">CANCEL</button>
           </div>
         </form>
       </div>
@@ -2773,15 +3052,15 @@
         if (msgElem) { msgElem.textContent = ''; msgElem.className = 'auth-msg'; }
 
         const modalCard = document.querySelector('.auth-modal-card');
-        const titleElem = modalCard ? modalCard.querySelector('.game-title') : null;
-        const subTitleElem = modalCard ? modalCard.querySelector('.subtitle') : null;
+        const titleElem = modalCard ? modalCard.querySelector('.auth-modal-title') : null;
+        const subTitleElem = modalCard ? modalCard.querySelector('.auth-modal-subtitle') : null;
 
         if (mode === 'login') {
           tabLogin.classList.add('active');
           tabRegister.classList.remove('active');
           groupAvatar.classList.add('hidden');
           submitBtn.textContent = 'LOG IN PILOT';
-          if (titleElem) titleElem.textContent = 'FLEET PILOT LOGIN';
+          if (titleElem) titleElem.textContent = 'FLEET COMMAND ACCESS';
           if (subTitleElem) subTitleElem.textContent = 'ENTER COMMANDER CREDENTIALS';
         } else {
           tabRegister.classList.add('active');
@@ -2874,6 +3153,48 @@
     }
 
     /* ==========================================================================
+       DIFFICULTY CONFIGURATION
+       ========================================================================== */
+    const DIFFICULTY_SETTINGS = {
+      EASY: {
+        id: 'EASY',
+        name: 'RECRUIT',
+        color: '#10b981',
+        badge: '🟢 RECRUIT',
+        lives: 5,
+        enemySpeedMult: 0.75,
+        spawnIntervalMult: 1.25,
+        scoreMult: 1.0,
+        dropRate: 0.28,
+        desc: '<span>❤️ 5 LIVES</span> • <span>🐢 75% SPEED</span> • <span>⭐ 1.0x SCORE</span>'
+      },
+      NORMAL: {
+        id: 'NORMAL',
+        name: 'COMMANDER',
+        color: '#ffea00',
+        badge: '🟡 COMMANDER',
+        lives: 3,
+        enemySpeedMult: 1.0,
+        spawnIntervalMult: 1.0,
+        scoreMult: 1.5,
+        dropRate: 0.22,
+        desc: '<span>❤️ 3 LIVES</span> • <span>⚡ 100% SPEED</span> • <span style="color: var(--accent);">⭐ 1.5x SCORE MULTIPLIER</span>'
+      },
+      HARD: {
+        id: 'HARD',
+        name: 'ACE NIGHTMARE',
+        color: '#ff0055',
+        badge: '🔴 ACE NIGHTMARE',
+        lives: 2,
+        enemySpeedMult: 1.3,
+        spawnIntervalMult: 0.7,
+        scoreMult: 2.5,
+        dropRate: 0.15,
+        desc: '<span>❤️ 2 LIVES</span> • <span>🔥 130% SPEED & RAPID SHOT</span> • <span style="color: #ff0055; font-weight: bold;">⭐ 2.5x SCORE BONUS</span>'
+      }
+    };
+
+    /* ==========================================================================
        3. MAIN GAME ENGINE & LOGIC
        ========================================================================== */
     class Game {
@@ -2888,7 +3209,13 @@
         this.state = 'START'; // START, PLAYING, PAUSED, GAME_OVER
         this.score = 0;
         this.highScore = this.auth.activePilot ? (this.auth.activePilot.highScore || 0) : (parseInt(localStorage.getItem('pixel_defender_highscore')) || 0);
-        this.lives = 3;
+
+        // Difficulty Mode System
+        this.difficulty = localStorage.getItem('pixel_defender_difficulty') || 'NORMAL';
+        const initialDiff = DIFFICULTY_SETTINGS[this.difficulty] ? this.difficulty : 'NORMAL';
+        this.maxLives = DIFFICULTY_SETTINGS[initialDiff].lives;
+        this.lives = this.maxLives;
+
         this.kills = 0;
         this.combo = 0;
         this.multiplier = 1;
@@ -2998,6 +3325,19 @@
         document.getElementById('btn-confirm-yes').addEventListener('click', () => this.confirmRestart());
         document.getElementById('btn-confirm-no').addEventListener('click', () => this.cancelRestart());
         document.getElementById('btn-resume').addEventListener('click', () => this.resumeGame());
+
+        // Difficulty Selector Listeners
+        const diffBtns = document.querySelectorAll('.difficulty-btn');
+        const savedDiff = localStorage.getItem('pixel_defender_difficulty') || 'NORMAL';
+        this.setDifficulty(savedDiff);
+
+        diffBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const diff = btn.getAttribute('data-diff');
+            this.setDifficulty(diff);
+            if (audio) audio.playHit();
+          });
+        });
         
         const pauseBtn = document.getElementById('btn-pause');
         pauseBtn.addEventListener('click', () => {
@@ -3021,6 +3361,25 @@
             perfBtn.style.borderColor = this.glowEnabled ? 'var(--primary)' : '#718096';
             this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 250, this.glowEnabled ? 'TURBO GLOW ACTIVE' : 'ECO MODE ACTIVE (60 FPS)', '#00ff66'));
           });
+        }
+      }
+
+      setDifficulty(diffKey) {
+        this.difficulty = DIFFICULTY_SETTINGS[diffKey] ? diffKey : 'NORMAL';
+        localStorage.setItem('pixel_defender_difficulty', this.difficulty);
+
+        const diffBtns = document.querySelectorAll('.difficulty-btn');
+        diffBtns.forEach(b => {
+          if (b.getAttribute('data-diff') === this.difficulty) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        });
+
+        const descElem = document.getElementById('difficulty-desc');
+        if (descElem && DIFFICULTY_SETTINGS[this.difficulty]) {
+          descElem.innerHTML = DIFFICULTY_SETTINGS[this.difficulty].desc;
         }
       }
 
@@ -3050,13 +3409,15 @@
 
       startGame() {
         audio.init();
+        const settings = DIFFICULTY_SETTINGS[this.difficulty || 'NORMAL'] || DIFFICULTY_SETTINGS.NORMAL;
         this.score = 0;
-        this.lives = 3;
+        this.maxLives = settings.lives;
+        this.lives = this.maxLives;
         this.kills = 0;
         this.combo = 0;
         this.multiplier = 1;
         this.level = 1;
-        this.spawnInterval = 1200;
+        this.spawnInterval = 1200 * settings.spawnIntervalMult;
 
         // Stage Reset
         this.stage = 1;
@@ -3075,6 +3436,7 @@
 
         this.state = 'PLAYING';
         audio.startBGM(1, false);
+        this.floatingTexts.push(new FloatingText(this.canvas.width / 2, 260, `MISSION MODE: ${settings.badge}`, settings.color));
         this.updateHUD();
 
         document.getElementById('screen-start').classList.add('hidden');
@@ -3222,7 +3584,9 @@
         }
         this.lastComboTime = now;
 
-        const earned = pts * this.multiplier;
+        const diffSettings = DIFFICULTY_SETTINGS[this.difficulty || 'NORMAL'] || DIFFICULTY_SETTINGS.NORMAL;
+        const scoreMult = diffSettings.scoreMult;
+        const earned = Math.round(pts * this.multiplier * scoreMult);
         this.score += earned;
         if (this.score > this.highScore) this.highScore = this.score;
 
@@ -3245,7 +3609,6 @@
         this.enemies = [];
         this.enemyLasers = [];
 
-        // Also damage boss if present
         if (this.isBossActive && this.boss && this.boss.alive) {
           this.boss.hp -= 15;
           if (this.boss.hp <= 0) {
@@ -3271,7 +3634,7 @@
         }
 
         this.lives--;
-        this.player.weaponMode = 'SINGLE'; // Reset weapon power-up on life lost!
+        this.player.weaponMode = 'SINGLE';
         this.player.dronesActive = false;
         this.player.freezeActive = false;
         this.combo = 0;
@@ -3303,7 +3666,8 @@
 
         const stageLabel = document.getElementById('hud-stage-label');
         if (stageLabel) {
-          stageLabel.textContent = `STAGE ${this.stage}`;
+          const diffBadge = (DIFFICULTY_SETTINGS[this.difficulty || 'NORMAL'] || DIFFICULTY_SETTINGS.NORMAL).badge;
+          stageLabel.textContent = `STAGE ${this.stage} • ${diffBadge}`;
           stageLabel.style.color = this.currentTheme.primary;
         }
 
@@ -3315,7 +3679,8 @@
 
         const heartsContainer = document.getElementById('hud-lives');
         heartsContainer.innerHTML = '';
-        for (let i = 0; i < 3; i++) {
+        const totalHearts = this.maxLives || 3;
+        for (let i = 0; i < totalHearts; i++) {
           const heart = document.createElement('span');
           heart.className = `heart-icon ${i >= this.lives ? 'lost' : ''}`;
           heart.textContent = '❤️';
@@ -3388,8 +3753,9 @@
         this.enemyLasers.forEach(l => l.update());
         this.enemyLasers = this.enemyLasers.filter(l => l.alive);
 
-        // Update Enemies (with Chronos Freeze speed scaling)
-        const enemySpeedScale = this.player.freezeActive ? 0.18 : 1.0;
+        // Update Enemies (with Chronos Freeze & difficulty speed scaling)
+        const diffSettings = DIFFICULTY_SETTINGS[this.difficulty || 'NORMAL'] || DIFFICULTY_SETTINGS.NORMAL;
+        const enemySpeedScale = (this.player.freezeActive ? 0.18 : 1.0) * diffSettings.enemySpeedMult;
         this.enemies.forEach(e => e.update(this.enemyLasers, enemySpeedScale));
 
         // Update Powerups
@@ -3490,9 +3856,9 @@
                   }
                 }
 
-                if (Math.random() < 0.22) {
+                if (Math.random() < diffSettings.dropRate) {
                   const types = ['SHIELD', 'TRIPLE', 'MISSILE', 'PLASMA', 'WAVE', 'FREEZE', 'DRONES', 'BOMB'];
-                  if (this.lives < 3 && Math.random() < 0.3) types.push('HEART');
+                  if (this.lives < this.maxLives && Math.random() < 0.3) types.push('HEART');
                   const chosenType = types[Math.floor(Math.random() * types.length)];
                   this.powerups.push(new PowerUp(e.x, e.y, chosenType));
                 }
